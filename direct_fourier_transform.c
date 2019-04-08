@@ -109,31 +109,31 @@ void load_sources(Config *config, Source **sources)
 		for(int src_indx = 0; src_indx < config->num_sources; ++src_indx)
 		{
 			(*sources)[src_indx] = (Source) {
-                .l = random_in_range(config->min_u,config->max_u) * config->cell_size,
-                .m = random_in_range(config->min_v,config->max_v) * config->cell_size,
-                .intensity = 1.0}; // fixed intensity for testing purposes
+            	.l = random_in_range(config->min_u,config->max_u) * config->cell_size,
+            	.m = random_in_range(config->min_v,config->max_v) * config->cell_size,
+            	.intensity = 1.0}; // fixed intensity for testing purposes
 		}
 	}
 	else // Using sources from file
 	{
 		printf(">>> UPDATE: Using Sources from file...\n\n");
 		FILE *file = fopen(config->source_file, "r");
-        if(file == NULL)
-    	{
+		if(file == NULL)
+		{
     		printf(">>> ERROR: Unable to locate sources file...\n\n");
     		return;
-    	}
+		}
 
-        // Reading in the counter for number of sources
+		// Reading in the counter for number of sources
 		fscanf(file, "%d\n", &(config->num_sources));
 		*sources = calloc(config->num_sources, sizeof(Source));
 
 		if(*sources == NULL) 
-        {
+		{
         	printf(">>> ERROR: Unable to allocate memory for sources...\n\n");
             if(file) fclose(file);
             return;
-        }
+		}
 
 		double l = 0.0;
 		double m = 0.0;
@@ -146,9 +146,9 @@ void load_sources(Config *config, Source **sources)
 			fscanf(file, "%lf %lf %lf\n", &l, &m, &intensity);
 
 			(*sources)[src_indx] = (Source) {
-                .l = l * config->cell_size,
-                .m = m * config->cell_size,
-                .intensity = intensity};
+				.l = l * config->cell_size,
+				.m = m * config->cell_size,
+				.intensity = intensity};
 		}
 
 		// Clean up
@@ -182,9 +182,9 @@ void load_visibilities(Config *config, Visibility **visibilities)
 		for(int vis_indx = 0; vis_indx < config->num_visibilities; ++vis_indx)
 		{	
 			// Using gaussian distribution
-            if(config->gaussian_distribution_sources)
+			if(config->gaussian_distribution_sources)
 			{
-            	gaussian_u = generate_sample_normal();
+				gaussian_u = generate_sample_normal();
 				gaussian_v = generate_sample_normal();
 				gaussian_w = generate_sample_normal();
 			}
@@ -196,32 +196,32 @@ void load_visibilities(Config *config, Visibility **visibilities)
 				: random_in_range(config->min_w / 10.0, config->max_w / 10.0) * gaussian_w;
 
 			(*visibilities)[vis_indx] = (Visibility) {
-                .u = u / config->uv_scale,
-                .v = v / config->uv_scale,
-            	.w = w / config->uv_scale};
-		}
+				.u = u / config->uv_scale,
+				.v = v / config->uv_scale,
+				.w = w / config->uv_scale};
+			};
 	}
 	else // Using visibilities from file
 	{
 		printf(">>> UPDATE: Using Visibilities from file...\n\n");
 		FILE *file = fopen(config->vis_file, "r");
-        if(file == NULL)
-    	{
+		if(file == NULL)
+		{
     		printf(">>> ERROR: Unable to locate visibilities file...\n\n");
     		return;
-    	}
+		}
 
-        // Reading in the counter for number of visibilities
+		// Reading in the counter for number of visibilities
 		fscanf(file, "%d\n", &(config->num_visibilities));
 		*visibilities = calloc(config->num_visibilities, sizeof(Visibility));
 
 		// File found, but was memory allocated?
 		if(*visibilities == NULL) 
-        {
-        	printf(">>> ERROR: Unable to allocate memory for visibilities...\n\n");
-            if(file) fclose(file);
-            return;
-        }
+		{
+			printf(">>> ERROR: Unable to allocate memory for visibilities...\n\n");
+			if(file) fclose(file);
+			return;
+		}
 
 		double u = 0.0;
 		double v = 0.0;
@@ -242,12 +242,13 @@ void load_visibilities(Config *config, Visibility **visibilities)
 				 &(brightness.imaginary), &intensity);
 
 			(*visibilities)[vis_indx] = (Visibility) {
-                .u = u * wavelength_to_meters,
-                .v = v * wavelength_to_meters,
-                .w = (config->forceZeroWTerm) ? 0.0 : w * wavelength_to_meters,
-            	.brightness.real = brightness.real,
-            	.brightness.imaginary = brightness.imaginary,
-            	.intensity = 1.0}; // fixed to 1.0 (for now)
+				.u = u * wavelength_to_meters,
+				.v = v * wavelength_to_meters,
+				.w = (config->forceZeroWTerm) ? 0.0 : w * wavelength_to_meters,
+				.brightness.real = brightness.real,
+				.brightness.imaginary = brightness.imaginary,
+				.intensity = 1.0 // fixed to 1.0 (for now)
+			};
 		}
 
 		// Clean up
@@ -273,8 +274,8 @@ void extract_visibilities(Config *config, Source *sources, Visibility *visibilit
 			double theta            = vis->u * src->l + vis->v * src->m + vis->w * (image_correction - 1.0);
 			
 			Complex theta_complex = (Complex) {
-                			.real =  cos(2.0 * M_PI * theta),
-					   .imaginary = -sin(2.0 * M_PI * theta)
+				.real =  cos(2.0 * M_PI * theta),
+				.imaginary = -sin(2.0 * M_PI * theta)
 			};
 
 			double normalized_intensity     = src->intensity / image_correction;
@@ -318,12 +319,12 @@ void save_visibilities(Config *config, Visibility *visibilities)
 	{
 		// u, v, w, real, imag, intensity
 		fprintf(file, "%lf %lf %lf %lf %lf %lf\n",
-            visibilities[vis_indx].u / meters_to_wavelengths,
+			visibilities[vis_indx].u / meters_to_wavelengths,
 			visibilities[vis_indx].v / meters_to_wavelengths,
-		    visibilities[vis_indx].w / meters_to_wavelengths,
-            visibilities[vis_indx].brightness.real,
-		    visibilities[vis_indx].brightness.imaginary,
-		    1.0); // static intensity (for now)
+			visibilities[vis_indx].w / meters_to_wavelengths,
+			visibilities[vis_indx].brightness.real,
+			visibilities[vis_indx].brightness.imaginary,
+			1.0); // static intensity (for now)
 	}
 
 	// Clean up
@@ -402,27 +403,27 @@ double unit_test_generate_approximate_visibilities(void)
 
 	fscanf(file, "%d\n", &(config.num_visibilities));
 
-    double u = 0.0;
-    double v = 0.0;
-    double w = 0.0;
-    double intensity = 0.0;
-    double difference = 0.0;
-    double wavelength_to_meters = config.frequency_hz / C;
-    Complex brightness = (Complex) {.real = 0.0, .imaginary = 0.0};
+	double u = 0.0;
+	double v = 0.0;
+	double w = 0.0;
+	double intensity = 0.0;
+	double difference = 0.0;
+	double wavelength_to_meters = config.frequency_hz / C;
+	Complex brightness = (Complex) {.real = 0.0, .imaginary = 0.0};
 	Visibility test_visibility;
 	Visibility approx_visibility[1]; // testing one at a time
 
 	for(int vis_indx = 0; vis_indx < config.num_visibilities; ++vis_indx)
 	{
 		fscanf(file, "%lf %lf %lf %lf %lf %lf\n", &u, &v, &w, &(brightness.real),
-        	&(brightness.imaginary), &intensity);
+		&(brightness.imaginary), &intensity);
 
-	    test_visibility.u = u * wavelength_to_meters;
-        test_visibility.v = v * wavelength_to_meters;
-        test_visibility.w = w * wavelength_to_meters; 
-        test_visibility.brightness.real = brightness.real;
-        test_visibility.brightness.imaginary = brightness.imaginary;
-        test_visibility.intensity = intensity;
+		test_visibility.u = u * wavelength_to_meters;
+		test_visibility.v = v * wavelength_to_meters;
+		test_visibility.w = w * wavelength_to_meters; 
+		test_visibility.brightness.real = brightness.real;
+		test_visibility.brightness.imaginary = brightness.imaginary;
+		test_visibility.intensity = intensity;
 
 		approx_visibility[0] = (Visibility) {
 			.u = test_visibility.u,
@@ -437,9 +438,9 @@ double unit_test_generate_approximate_visibilities(void)
 		extract_visibilities(&config, sources, approx_visibility, 1);
 
         double current_difference = sqrt(pow(approx_visibility[0].brightness.real
-        							-test_visibility.brightness.real, 2.0)
-    								+ pow(approx_visibility[0].brightness.imaginary
-									-test_visibility.brightness.imaginary, 2.0));
+			-test_visibility.brightness.real, 2.0)
+			+ pow(approx_visibility[0].brightness.imaginary
+			-test_visibility.brightness.imaginary, 2.0));
 
         if(current_difference > difference)
             difference = current_difference;
