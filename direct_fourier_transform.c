@@ -109,9 +109,9 @@ void load_sources(Config *config, Source **sources)
 		for(int src_indx = 0; src_indx < config->num_sources; ++src_indx)
 		{
 			(*sources)[src_indx] = (Source) {
-            	.l = random_in_range(config->min_u,config->max_u) * config->cell_size,
-            	.m = random_in_range(config->min_v,config->max_v) * config->cell_size,
-            	.intensity = 1.0}; // fixed intensity for testing purposes
+				.l = random_in_range(config->min_u,config->max_u) * config->cell_size,
+				.m = random_in_range(config->min_v,config->max_v) * config->cell_size,
+				.intensity = 1.0}; // fixed intensity for testing purposes
 		}
 	}
 	else // Using sources from file
@@ -120,8 +120,8 @@ void load_sources(Config *config, Source **sources)
 		FILE *file = fopen(config->source_file, "r");
 		if(file == NULL)
 		{
-    		printf(">>> ERROR: Unable to locate sources file...\n\n");
-    		return;
+			printf(">>> ERROR: Unable to locate sources file...\n\n");
+			return;
 		}
 
 		// Reading in the counter for number of sources
@@ -130,9 +130,9 @@ void load_sources(Config *config, Source **sources)
 
 		if(*sources == NULL) 
 		{
-        	printf(">>> ERROR: Unable to allocate memory for sources...\n\n");
-            if(file) fclose(file);
-            return;
+			printf(">>> ERROR: Unable to allocate memory for sources...\n\n");
+			if(file) fclose(file);
+			return;
 		}
 
 		double l = 0.0;
@@ -207,8 +207,8 @@ void load_visibilities(Config *config, Visibility **visibilities)
 		FILE *file = fopen(config->vis_file, "r");
 		if(file == NULL)
 		{
-    		printf(">>> ERROR: Unable to locate visibilities file...\n\n");
-    		return;
+			printf(">>> ERROR: Unable to locate visibilities file...\n\n");
+			return;
 		}
 
 		// Reading in the counter for number of visibilities
@@ -437,13 +437,13 @@ double unit_test_generate_approximate_visibilities(void)
 		// Measure one visibility brightness from n sources
 		extract_visibilities(&config, sources, approx_visibility, 1);
 
-        double current_difference = sqrt(pow(approx_visibility[0].brightness.real
+		double current_difference = sqrt(pow(approx_visibility[0].brightness.real
 			-test_visibility.brightness.real, 2.0)
 			+ pow(approx_visibility[0].brightness.imaginary
 			-test_visibility.brightness.imaginary, 2.0));
 
-        if(current_difference > difference)
-            difference = current_difference;
+		if(current_difference > difference)
+			difference = current_difference;
 	}
 
 	// Clean up
