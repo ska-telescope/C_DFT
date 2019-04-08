@@ -29,10 +29,10 @@ TEST(DFTTest, VisibilitiesApproximatelyEqual)
 {
 	double threshold = 1e-5; // 0.00001
 	double difference = unit_test_generate_approximate_visibilities();
-    ASSERT_LE(difference, threshold); // x <= y
+	ASSERT_LE(difference, threshold); // diff <= threshold
 }
 
 int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+	testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }

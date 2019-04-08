@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 	// Something went wrong during loading of visibilities
 	if(visibilities == NULL)
 	{
-	    if(sources) free(sources);
+		if(sources) free(sources);
 		return EXIT_FAILURE;
 	}
 
