@@ -211,7 +211,7 @@ void load_visibilities(Config *config, Visibility **visibilities)
 			(*visibilities)[vis_indx] = (Visibility) {
 				.u = u / config->uv_scale,
 				.v = v / config->uv_scale,
-				.w = w / config->uv_scale};
+				.w = w};
 			};
 	}
 	else // Using visibilities from file
@@ -363,7 +363,7 @@ double generate_sample_normal()
 	double r = u * u + v * v;
 	if(r <= 0.0 || r > 1.0)
 		return generate_sample_normal();
-	return u * sqrt(-2.0 * log(r) / r);
+	return r * sqrt(-2.0 * log(r) / r);
 }
 
 //**************************************//
